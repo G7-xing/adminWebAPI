@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="6.0.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="SqlSugarCore" Version="5.1.4.95" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EWI_System.Model\EWI_System.Model.csproj" />
+  </ItemGroup>
+
+</Project>
