@@ -49,8 +49,8 @@ namespace EWI_System.WebAPI.Controllers
         /// <summary>
         ///获取在库的所有数据
         ///pageNum: 1,
-        //pageSize: 10,
-        //keyword: null
+        ///pageSize: 10,
+        ///keyword: null
         /// </summary>
         /// <returns></returns>
         [HttpGet]

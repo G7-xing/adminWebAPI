@@ -12,15 +12,23 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EWI_System.WebAPI.Controllers
 {
+    /// <summary>
+    /// CT报表的controller
+    /// </summary>
     [Route("[controller]/[action]")]
     [ApiController]
     public class CTReportController : ControllerBase
     {
-
+        /// <summary>
+        /// 
+        /// </summary>
         #region 注入服务层
         public ICTReportService CTReportService;
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CTReportService"></param>
         public CTReportController(ICTReportService CTReportService)
         {
             this.CTReportService = CTReportService;
@@ -30,7 +38,7 @@ namespace EWI_System.WebAPI.Controllers
         /// <summary>
         /// 增加
         /// </summary>
-        /// <param name="CTReport"></param>
+        /// <param name="cTReport"></param>
         /// <returns></returns>
         [HttpPost]
         public R CreateCTReport(CTReport cTReport)
@@ -62,13 +70,18 @@ namespace EWI_System.WebAPI.Controllers
                 cTReportReq.ListQuery.When = Array.Empty<string>();
             }
             var CTReportlist = CTReportService.FetchList(cTReportReq.PageNum, cTReportReq.PageSize, cTReportReq.ListQuery, ref total);
-            if (CTReportlist.Count == 0)
+            if (CTReportlist.Count < 0)
             {
                 return R.Error("查询失败");
             }
             return R.OK(CTReportlist).data("total", total);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attendanceDate"></param>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet]
         public R DeleteAttendance(string attendanceDate, string userId)
         {
@@ -76,6 +89,11 @@ namespace EWI_System.WebAPI.Controllers
             return R.Error("");
             //return R.Error(msg);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="CTReportId"></param>
+        /// <returns></returns>
         [HttpGet]
         public R eyeDetailData(string CTReportId)
         {
@@ -86,7 +104,11 @@ namespace EWI_System.WebAPI.Controllers
             var detailList = CTReportService.eyeDetailData(CTReportId);
             return R.OK(detailList);
         }
-        //
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="report"></param>
+        /// <returns></returns>
         [HttpPost]
         public R UpdateCTReport(CTReport report)
         {
@@ -103,7 +125,7 @@ namespace EWI_System.WebAPI.Controllers
         /// <summary>
         /// 保存ct的detail
         /// </summary>
-        /// <param name="ctreportDetails"></param>
+        /// <param name="cTDetaildataReq"></param>
         /// <returns></returns>
         [HttpPost]
         public R saveDetailData(CTDetaildataReq cTDetaildataReq)

@@ -109,6 +109,7 @@ namespace EWI_System.Service
 
           var page = dbconn.Queryable<User>()
                                      .LeftJoin<Department>((u, d) => u.DepartmentId == d.DepartmentId)
+                                     .WhereIF(!String.IsNullOrEmpty(keyword),u=>SqlFunc.Contains(u.UserName,keyword))
                                      .Select((u, d) => new UserRes 
                                      {
                                          Id = u.Id,

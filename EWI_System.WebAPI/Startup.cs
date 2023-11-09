@@ -1,3 +1,5 @@
+using DotLiquid.Util;
+
 using EWI_System.Model;
 using EWI_System.Service;
 using EWI_System.Service.Config;
@@ -61,31 +63,38 @@ namespace EWI_System.WebAPI
                 SqlSugarScope sqlSugar = new SqlSugarScope(new List<ConnectionConfig>()
                 {
                     new ConnectionConfig(){
-                        ConfigId="0",
+                        ConfigId="System_DB",
                         DbType = SqlSugar.DbType.SqlServer,
-                        ConnectionString = Configuration.GetSection("ConnectionStrings").GetChildren().ToList()[0].Value,
+                        ConnectionString = Configuration["ConnectionStrings:System_DB"],
                         IsAutoCloseConnection = true,
                         InitKeyType = InitKeyType.Attribute},
                     new ConnectionConfig(){
-                        ConfigId="1",
+                        ConfigId="ACE_Traceability_DB",
                         DbType = SqlSugar.DbType.SqlServer,
-                        ConnectionString = Configuration.GetSection("ConnectionStrings").GetChildren().ToList()[1].Value,
+                        ConnectionString = Configuration["ConnectionStrings:ACE_Traceability_DB"],
+                        IsAutoCloseConnection = true,
+                        InitKeyType = InitKeyType.Attribute },
+                    new ConnectionConfig(){
+                        ConfigId="SiplaceSetupCenter_DB",
+                        DbType = SqlSugar.DbType.SqlServer,
+                        ConnectionString = Configuration["ConnectionStrings:SiplaceSetupCenter_DB"],
                         IsAutoCloseConnection = true,
                         InitKeyType = InitKeyType.Attribute },
                 },
                db =>
                {
-                   //单例参数配置，所有上下文生效
-                   db.Aop.OnLogExecuting = (sql, pars) =>
-                               {
-                                   //获取IOC对象不要求在一个上下文
-                                   //vra log=s.GetService<Log>()
-                                   Console.WriteLine(UtilMethods.GetNativeSql(sql, pars));
-                                   //获取IOC对象要求在一个上下文
-                                   //var appServive = s.GetService<IHttpContextAccessor>();
-                                   //var log= appServive?.HttpContext?.RequestServices.GetService<Log>();
-                               };
-               });
+                   //单例参数配置，所有上下文生效 打印一下sql方便调试
+                   db.GetConnection("System_DB").Aop.OnLogExecuting = (sql, pars) => Console.WriteLine(UtilMethods.GetNativeSql(sql, pars));
+                   db.GetConnection("ACE_Traceability_DB").Aop.OnLogExecuting = (sql, pars) =>
+                   {
+                       //技巧：AOP中获取IOC对象
+                       //var serviceBuilder = services.BuildServiceProvider();
+                       //var log= serviceBuilder.GetService<ILogger<WeatherForecastController>>()
+                       Console.WriteLine(UtilMethods.GetNativeSql(sql, pars));
+                   };
+                   db.GetConnection("SiplaceSetupCenter_DB").Aop.OnLogExecuting = (sql, pars) => Console.WriteLine(UtilMethods.GetNativeSql(sql, pars));
+
+               }) ;
                 return sqlSugar;
             });
             //services.AddControllers();
