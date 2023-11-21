@@ -9,9 +9,11 @@ namespace EWI_System.Service
     {
         public List<UserRes> List(int pageNum, int pageSize, string keyword,ref int totalCount);
         bool CreateUser(User User);
-        public UserRoleRelation GetRoleByUser(string UserId);
+        public List<UserRoleRelation> GetRoleByUser(string UserId);
         bool DeleteUser(string UserId, out string msg);
         bool UpdateUser(User User);
-        bool AllocRole(UserRoleRelation obj);
+        bool AllocRole(UserAllocRole obj);
+        bool checkOldPassword(User user);
+        bool updateUserPwd(User user);
     }
 }

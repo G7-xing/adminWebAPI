@@ -50,7 +50,7 @@ namespace EWI_System.Service.Jwt
                 issuer:_JWTTokenOptions.Issuer,
                 audience:_JWTTokenOptions.Audience,
                 claims:claims,
-                expires: DateTime.Now.Add(TimeSpan.FromSeconds(_JWTTokenOptions.ExpireSeconds)),//5h有效
+                expires: DateTime.Now.Add(TimeSpan.FromDays(_JWTTokenOptions.ExpireDays)),//天数有效
                 signingCredentials: credentials
                 );
             string returnToken = new JwtSecurityTokenHandler().WriteToken(token);

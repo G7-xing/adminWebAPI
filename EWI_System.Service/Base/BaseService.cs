@@ -17,7 +17,7 @@ namespace EWI_System.Service
 
         public BaseService(ISqlSugarClient dbconn)
         {
-            this.dbconn = dbconn.AsTenant().GetConnectionScope(0);
+            this.dbconn = dbconn;
         }
         #region Query
 

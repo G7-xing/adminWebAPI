@@ -18,11 +18,26 @@ namespace EWI_System.WebAPI.Controllers
     public class LoginController : ControllerBase
     {
         // 注入服务层
+        /// <summary>
+        /// 注入服务层
+        /// </summary>
         public ILoginService _loginService;
+        /// <summary>
+        /// 注入服务层
+        /// </summary>
         public IJwtService _jwtService;
+        /// <summary>
+        /// 注入服务层
+        /// </summary>
         public IRoleService _roleService;
         private readonly ILogger<LoginController> _logger;
-
+        /// <summary>
+        /// 构造器
+        /// </summary>
+        /// <param name="loginService"></param>
+        /// <param name="jwtService"></param>
+        /// <param name="roleService"></param>
+        /// <param name="logger"></param>
         public LoginController(ILoginService loginService, IJwtService jwtService,IRoleService roleService, ILogger<LoginController> logger)
         {
             _loginService = loginService;
@@ -77,6 +92,10 @@ namespace EWI_System.WebAPI.Controllers
             s.RoleName = _roleService.GetRoleByUserId(s.UserId);
             return R.OK(s).data("menus", menusList);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         public R LoginOut() {
             return R.OK();

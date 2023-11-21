@@ -16,7 +16,7 @@ namespace EWI_System.Service
 
         public CTReportService(ISqlSugarClient dbconn)
         {
-            this.dbconn = dbconn.AsTenant().GetConnectionScope(0);
+            this.dbconn = dbconn;
         }
         /// <summary>
         /// add

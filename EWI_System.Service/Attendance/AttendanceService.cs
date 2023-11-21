@@ -23,7 +23,7 @@ namespace EWI_System.Service
         /// <returns></returns>
         public bool CreateAttendance(UserAttendanceInfo attendanceInfo)
         {
-            var ds = dbconn.AsTenant().GetConnectionScope(0).Insertable(attendanceInfo).ExecuteCommand();
+            var ds = dbconn.Insertable(attendanceInfo).ExecuteCommand();
             if (ds == 1)
             {
                 return true;

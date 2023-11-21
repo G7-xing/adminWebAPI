@@ -60,6 +60,7 @@ namespace EWI_System.WebAPI
             //注册SqlSugar
             services.AddSingleton<ISqlSugarClient>(s =>
             {
+                SnowFlakeSingle.WorkId = 6789;
                 SqlSugarScope sqlSugar = new SqlSugarScope(new List<ConnectionConfig>()
                 {
                     new ConnectionConfig(){
@@ -153,7 +154,7 @@ namespace EWI_System.WebAPI
             });    
                 // 解决浏览器的同源策略问题--跨域问题
             services.AddCors(option => {
-                option.AddPolicy("CorsPolicy", opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().WithExposedHeaders("X-Pagination"));
+                option.AddPolicy("CorsPolicy", opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             });
             // 注册automapper的配置
             services.AddAutoMapper(typeof(AutoMapperConfigs));

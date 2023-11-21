@@ -18,9 +18,15 @@ namespace EWI_System.WebAPI.Controllers
     public class LineController : ControllerBase
     {
         #region 注入服务层
+        /// <summary>
+        /// 服务层
+        /// </summary>
         public ILineService lineService;
         
-
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        /// <param name="lineService"></param>
         public LineController(ILineService lineService)
         {
             this.lineService = lineService;
@@ -60,12 +66,20 @@ namespace EWI_System.WebAPI.Controllers
             var Linelist = lineService.FetchList(pageNum, pageSize, keyword, ref total);
             return R.OK(Linelist).data("total", total);
         }
+        /// <summary>
+        /// all
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public R FetchAllList()
         {
             return R.OK(lineService.FetchAllList());
         }
-
+        /// <summary>
+        /// updateStatus
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         [HttpPost]
         public R UpdateStatus(Line line) 
         {
@@ -75,7 +89,11 @@ namespace EWI_System.WebAPI.Controllers
             }
             return R.Error("修改状态失败，请联系管理员");
         }
-
+        /// <summary>
+        /// update
+        /// </summary>
+        /// <param name="line"></param>
+        /// <returns></returns>
         [HttpPost]
         public R UpdateLine(Line line)
         {
@@ -89,7 +107,11 @@ namespace EWI_System.WebAPI.Controllers
             };
             return R.Error("更新失败，请检查提交的数据");
         }
-
+        /// <summary>
+        /// delete
+        /// </summary>
+        /// <param name="lineId"></param>
+        /// <returns></returns>
         [HttpGet]
         public R DeleteLine(string lineId)
         {

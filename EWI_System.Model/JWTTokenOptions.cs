@@ -21,6 +21,6 @@ namespace EWI_System.Model
         /// <summary>
         /// 过期时间
         /// </summary>
-        public int ExpireSeconds { get; set; }
+        public int ExpireDays { get; set; }
     }
 }

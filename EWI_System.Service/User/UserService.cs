@@ -1,4 +1,6 @@
 ﻿using EWI_System.Model.Enties;
+using NetTaste;
+
 using SqlSugar;
 using System;
 using System.Collections.Generic;
@@ -19,7 +21,7 @@ namespace EWI_System.Service
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        public bool AllocRole(UserRoleRelation obj)
+        public bool AllocRole(UserAllocRole obj)
         {
             try
             {
@@ -28,7 +30,12 @@ namespace EWI_System.Service
                      || dbconn.Queryable<UserRoleRelation>().Count(it => it.UserId == obj.UserId) == 0)
                 {
                     //var sd = roleReq.menuIds.Select(s => new UserRoleRelation { RoleId = roleReq.roleId, MenuId = s }).ToList();
-                    if (dbconn.Insertable(obj).ExecuteCommand() >= 0)
+                    List<UserRoleRelation> urr = new List<UserRoleRelation>();
+                    foreach (var item in obj.RoleId)
+                    {
+                        urr.Add(new UserRoleRelation { UserId = obj.UserId, RoleId = item });
+                    }
+                    if (dbconn.Insertable(urr).ExecuteCommand() >= 0)
                     {
                         return true;
                     }
@@ -40,6 +47,21 @@ namespace EWI_System.Service
 
                 throw;
             }
+        }
+        /// <summary>
+        /// 校验旧密码
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool checkOldPassword(User user)
+        {
+            var userold = dbconn.Queryable<User>().Where(U=>U.Id==user.Id).First();
+            if (userold==null)
+            {
+                return false;
+            }
+            return userold.Password == user.Password;
         }
 
         /// <summary>
@@ -87,14 +109,14 @@ namespace EWI_System.Service
         /// </summary>
         /// <param name="UserId"></param>
         /// <returns></returns>
-        public UserRoleRelation GetRoleByUser(string UserId)
+        public List<UserRoleRelation>   GetRoleByUser(string UserId)
         {
-            var info = dbconn.Queryable<UserRoleRelation>().First(t=>t.UserId == UserId);
-            if (info!=null)
+            List<UserRoleRelation> info = dbconn.Queryable<UserRoleRelation>().Where(t=>t.UserId == UserId).ToList();
+            if (info.Count<0)
             {
-                return info;
+                return null;
             }
-            return null ;
+            return info;
         }
 
         /// <summary>
@@ -150,20 +172,27 @@ namespace EWI_System.Service
                     UpdateBy = obj.CreateBy,
                     UpdateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
                 }).Where(it=>it.Id == obj.Id).ExecuteCommand();
-            if (flag !=1)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return flag == 1;
             
         }
+        /// <summary>
+        /// 更新密码
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public bool updateUserPwd(User user)
+        {
+            var flag = dbconn.Updateable<User>()
+                 .SetColumns(it => new User()
+                 {
+                     Password = user.Password,
+                     UpdateBy = user.Id,
+                     UpdateTime = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")
+                 }).Where(it => it.Id == user.Id).ExecuteCommand();
+            return flag == 1;
+        }
 
-        //public UserRoleRelation GetRoleByUser(string UserId)
-        //{
-        //    return dbconn.Queryable<UserRoleRelation>().Where(i => i.UserId == UserId);
-        //}
+        
     }
 }
