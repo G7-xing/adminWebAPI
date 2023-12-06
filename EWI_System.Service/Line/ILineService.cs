@@ -13,5 +13,6 @@ namespace EWI_System.Service
         bool UpdateLine(Line role);
         bool DeleteLine(string lineId, out string msg);
         List<Line> FetchAllList();
+        List<Line> getLineListByCategory(string category);
     }
 }

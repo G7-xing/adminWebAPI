@@ -72,8 +72,8 @@ namespace EWI_System.Service
                                                    .ToPageList(pageNum, pageSize, ref total);
                 foreach (var item in list)
                 {
-                    item.CTReport.ResultBalancerateline = (Double.Parse(item.CTReport.ResultBalancerateline) * 100.00).ToString();
-                    item.CTReport.ResultBalancerateop = (Double.Parse(item.CTReport.ResultBalancerateop) * 100.00).ToString();
+                    item.CTReport.ResultBalancerateline = !string.IsNullOrEmpty(item.CTReport.ResultBalancerateline)?(Double.Parse(item.CTReport.ResultBalancerateline) * 100.00).ToString():null;
+                    item.CTReport.ResultBalancerateop = !string.IsNullOrEmpty(item.CTReport.ResultBalancerateop) ? (Double.Parse(item.CTReport.ResultBalancerateop) * 100.00).ToString():null;
                 }
                 return list;
             }

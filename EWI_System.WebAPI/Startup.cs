@@ -98,6 +98,10 @@ namespace EWI_System.WebAPI
                }) ;
                 return sqlSugar;
             });
+            // 解决浏览器的同源策略问题--跨域问题
+            services.AddCors(option => {
+                option.AddPolicy("CorsPolicy", opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
             //services.AddControllers();
             // 设置Json返回的日期格式
             services.AddControllers().AddNewtonsoftJson(option =>
@@ -152,10 +156,7 @@ namespace EWI_System.WebAPI
                     o.IncludeDescriptions = true;
                 });
             });    
-                // 解决浏览器的同源策略问题--跨域问题
-            services.AddCors(option => {
-                option.AddPolicy("CorsPolicy", opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            });
+           
             // 注册automapper的配置
             services.AddAutoMapper(typeof(AutoMapperConfigs));
             // 注册jwt服务
@@ -205,19 +206,15 @@ namespace EWI_System.WebAPI
 
             // log4net注册
             loggerFactory.AddLog4Net();
-            
             // 启用swagger中间件
             app.UseSwagger();
             app.UseSwaggerUI(ui =>
             {
                 ui.SwaggerEndpoint("/swagger/V1/swagger.json", "VueAdmin API");
             });
-
-            app.UseCors("CorsPolicy");
-            
-
             app.UseRouting();
 
+            app.UseCors("CorsPolicy");
             #region jwt 认证
 
             app.UseAuthentication();
@@ -227,6 +224,7 @@ namespace EWI_System.WebAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapControllers().RequireCors("CorsPolicy");
             });
         }
     }

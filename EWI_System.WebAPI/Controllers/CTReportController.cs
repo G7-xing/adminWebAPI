@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -73,7 +74,7 @@ namespace EWI_System.WebAPI.Controllers
             if (CTReportlist.Count < 0)
             {
                 return R.Error("查询失败");
-            }
+            }           
             return R.OK(CTReportlist).data("total", total);
         }
         /// <summary>

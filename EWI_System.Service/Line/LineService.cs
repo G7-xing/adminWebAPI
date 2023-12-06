@@ -106,5 +106,10 @@ namespace EWI_System.Service
         {
             return dbconn.Queryable<Line>().Select(t => new Line { LineId = t.LineId, LineName = t.LineName }).OrderBy(t=>t.LineName).ToList();
         }
+
+        public List<Line> getLineListByCategory(string category)
+        {
+            return dbconn.Queryable<Line>().Where(t=>t.LineCategory.Contains(category)).Select(t => new Line { LineId = t.LineId, LineName = t.LineName }).OrderBy(t => t.LineName).ToList();
+        }
     }
 }

@@ -1,10 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>tianxing.song</Authors>
     <StartupObject>EWI_System.WebAPI.Program</StartupObject>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <ProduceReferenceAssembly>True</ProduceReferenceAssembly>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,6 +29,4 @@
     <ProjectReference Include="..\EWI_System.Common\EWI_System.Common.csproj" />
     <ProjectReference Include="..\EWI_System.Service\EWI_System.Service.csproj" />
   </ItemGroup>
-
-
 </Project>

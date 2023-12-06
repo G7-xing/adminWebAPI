@@ -7,6 +7,7 @@ namespace EWI_System.Service
 {
     public interface IUserService
     {
+        public User getUserById(string userId);
         public List<UserRes> List(int pageNum, int pageSize, string keyword,ref int totalCount);
         bool CreateUser(User User);
         public List<UserRoleRelation> GetRoleByUser(string UserId);

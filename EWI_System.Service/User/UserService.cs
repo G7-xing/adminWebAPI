@@ -17,6 +17,15 @@ namespace EWI_System.Service
             this.dbconn = dbconn;
         }
         /// <summary>
+        /// 获取用户信息
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public User getUserById(string userId) 
+        { 
+            return dbconn.Queryable<User>().Where(u=>u.Id==userId).First();
+        }
+        /// <summary>
         /// 用户与角色配置
         /// </summary>
         /// <param name="obj"></param>

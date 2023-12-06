@@ -76,6 +76,16 @@ namespace EWI_System.WebAPI.Controllers
             return R.OK(lineService.FetchAllList());
         }
         /// <summary>
+        /// 根据分类获取线体信息
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public R getLineListByCategory(string category)
+        {
+            return R.OK(lineService.getLineListByCategory(category));
+        }
+        /// <summary>
         /// updateStatus
         /// </summary>
         /// <param name="line"></param>

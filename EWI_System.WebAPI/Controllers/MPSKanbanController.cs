@@ -1,5 +1,6 @@
 ﻿using EWI_System.Model;
 using EWI_System.Service;
+using EWI_System.Service.MPSKanban.Dto;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -106,6 +107,59 @@ namespace EWI_System.WebAPI.Controllers
             }
             return R.OK(asmList).data("total", total);
         }
+        #region SMTMPSPDA 
+        /// <summary>
+        /// 获取MPSofline 信息
+        /// </summary>
+        /// <param name="lineMPSRes"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public R fetchMPSofLineList(List<string> lineMPSRes)
+        {
+            if (lineMPSRes.Count < 0)
+            {
+                return R.Error("提交数据为空，请注意！");
+            }
+            var MPSofLineList = _IMPSkanbanService.fetchMPSofLineList(lineMPSRes);
+            if (MPSofLineList.Count < 0)
+            {
+                return R.Error("查询失败");
+            }
+            return R.OK(MPSofLineList);
+        }
+        /// <summary>
+        /// 依据id查detail数据
+        /// </summary>
+        /// <param name="pickOrderId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public R fetchMPSDetailById(string pickOrderId)
+        {
+            if (string.IsNullOrEmpty(pickOrderId))
+            {
+                return R.Error("提交数据为空，请注意！");
+            }
+            var MPSDetailList = _IMPSkanbanService.fetchMPSDetailById(pickOrderId);
+            if (MPSDetailList.Count < 0)
+            {
+                return R.Error("查询失败");
+            }
+            return R.OK(MPSDetailList);
+        }
+
+        [HttpPost]
+        public R handleQADAndMPS(MPSPDAReqcs mPSPDA)
+        {
+            if (string.IsNullOrEmpty(mPSPDA.uniqueId))
+            {
+                return R.Error("提交数据为空，请注意！");
+            }
+            string errMsg = string.Empty;
+            return _IMPSkanbanService.handleQADAndMPS(mPSPDA, ref  errMsg) ? R.OK().message(mPSPDA.uniqueId+ ":QAD移库成功") : 
+                R.Error(mPSPDA.uniqueId + ":QAD返回失败"+ errMsg); 
+        }
+        #endregion
+
 
     }
 }
