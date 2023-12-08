@@ -1,4 +1,6 @@
 ﻿using EWI_System.Model.Enties;
+using EWI_System.Model.Enties.WipStroage;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,6 +11,7 @@ namespace EWI_System.Service
     {
         List<WipLocationArea> fectchLocationArea();
         List<TbMagazine> fetchMagazineList(int pageNum, int pageSize, string keyword, ref int total);
+        List<TbMagazine> getMagazineByNo(string magazineNo);
 
         #region wipcar
         bool createCar(WipCar wipCar);
@@ -42,6 +45,8 @@ namespace EWI_System.Service
         bool saveLocationWithCarInfo(WipCarLocationInfo wipCarLocationInfo);
         bool checkUnbindLocationIsValidByNo(string locationNo, ref string msg);
         bool unbindLocationWithCarInfo(WipCarLocationInfo wipCarLocationInfo);
+        List<PcbaData> getInStorageDataByPcbaNo(string pcbaNo);
+       
         #endregion
     }
 }

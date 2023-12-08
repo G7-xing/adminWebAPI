@@ -1,4 +1,5 @@
 ﻿using EWI_System.Model.Enties;
+using EWI_System.Model.Enties.WipStroage;
 
 using SqlSugar;
 
@@ -45,6 +46,10 @@ namespace EWI_System.Service
             return aceDB.Queryable<TbMagazine>().WhereIF(!String.IsNullOrEmpty(keyword), it => it.MagazineNo.Contains(keyword))
                                                  .OrderBy(W => W.MagazineNo)
                                                  .ToPageList(pageNum, pageSize, ref totalCount);
+        }
+        public List<TbMagazine> getMagazineByNo(string magazineNo)
+        {
+            return aceDB.Queryable<TbMagazine>().Where(t=>t.MagazineNo==magazineNo).ToList();
         }
         #endregion
 
@@ -362,7 +367,7 @@ namespace EWI_System.Service
                 // 就要去检查是否在半小时内多次绑定
                 List<WipCarLocationInfo> carLocationInfoDeleteds = dbconn.Queryable<WipCarLocationInfo>().Where(w => w.LocationNo == locationNo)
                                                                                                        .Where(w => w.Deleted == 1)
-                                                                                                       .Where(w => DateTime.Parse(w.UpdateBy).AddMinutes(10) >= DateTime.Now)
+                                                                                                       .Where(w => DateTime.Parse(w.UpdateTime).AddMinutes(10) >= DateTime.Now)
                                                                                                        .ToList();
                 if (carLocationInfoDeleteds.Count >= 2)
                 {
@@ -392,7 +397,7 @@ namespace EWI_System.Service
             {
                 WipCarLocationInfo carLocationInfo = dbconn.Queryable<WipCarLocationInfo>().Where(w => w.LocationNo == wipCarLocationInfo.LocationNo)
                                                                           .Where(w => w.Deleted == 0).First();
-                int relations = dbconn.Queryable<WipInfoRelation>().Where(W=>W.WipCarLocationInfoId==carLocationInfo.WipCarLocationInfoId.ToString()).Count();
+                int relations = dbconn.Queryable<WipInfoRelation>().Where(W => W.WipCarLocationInfoId == carLocationInfo.WipCarLocationInfoId.ToString()).Count();
                 // 封装联系表的数据
                 WipInfoRelation wipInfoRelation = new WipInfoRelation()
                 {
@@ -412,11 +417,28 @@ namespace EWI_System.Service
                                                 .UpdateColumns(W => new { W.UpdateBy, W.UpdateTime, W.Deleted })
                                                 .Where(W => W.WipCarLocationInfoId == carLocationInfo.WipCarLocationInfoId.ToString())
                                                 .Where(W => W.Deleted == 0).ExecuteCommand() == relations;
-                return ssd&&sd;
-                                               ;
+                return ssd && sd;
+                ;
             });
             return result.Data;
         }
+
+        public List<PcbaData> getInStorageDataByPcbaNo(string pcbaNo)
+        {
+            string sql = string.Format(@"select xx.magazineNo,xx.WipCarNo,xx.LocationNo,xx.AreaName,CONVERT(varchar(16), min(xx.uploaddate), 120) minDate from (
+                                                    select a.WipCarNo,a.LocationNo ,y.AreaName ,c.MagazineNo ,d.pcbaPartNo,d.uploaddate from WipCarLocationInfo a 
+                                                    left join WipStorageLocation x on x.LocationNo = a.LocationNo 
+                                                    left join WipLocationArea y on x.WipLocationAreaId  = y.WipLocationAreaId 
+                                                    left join WipInfoRelation b on a.WipCarLocationInfoId  = b.WipCarLocationInfoId 
+                                                    left join WipMagazineCarInfo c on b.WipMagazineCarInfoId = c.WipMagazineCarInfoId 
+                                                    left join [10.124.12.33].[ACE_Traceability].[dbo].[Tb_WIP_InOut] d  on d.magazineNo  collate Chinese_PRC_CI_AS = c.MagazineNo collate Chinese_PRC_CI_AS 
+                                                    where a.Deleted = 0 and d.pcbaPartNo = '{0}' 
+                                                ) xx group by xx.magazineNo,xx.WipCarNo,xx.LocationNo,xx.AreaName", pcbaNo);
+            List<PcbaData> pcbaDatas = dbconn.Ado.SqlQuery<PcbaData>(sql);
+            return pcbaDatas.OrderBy(i => i.minDate).ToList();
+        }
+
+        
         #endregion
     }
 }

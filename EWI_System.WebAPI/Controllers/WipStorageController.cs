@@ -331,10 +331,7 @@ namespace EWI_System.WebAPI.Controllers
             {
                 return R.Error("提交数据为空，请检查！");
             }
-            int total = 0;
-            // todo 需要精准查询重新写
-            wipStorageService.fetchMagazineList(1, 1, magazineNo, ref total);
-            if (!(total >= 1))
+            if (wipStorageService.getMagazineByNo(magazineNo).Count<=0)
             {
                 return R.Error("非法的Magazine信息，请扫入正确的Magazine二维码信息");
             }
@@ -473,6 +470,22 @@ namespace EWI_System.WebAPI.Controllers
                 return R.Error("系统错误，找it");
             }
             return R.OK().message("解绑成功！");
+
+        }
+        /// <summary>
+        /// 在库时间最早的查询
+        /// </summary>
+        /// <param name="pcbaNo"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public R getInStorageDataByPcbaNo(string pcbaNo)
+        {
+
+            if (string.IsNullOrEmpty(pcbaNo))
+            {
+                return R.Error("提交数据为空，请检查！");
+            }
+            return wipStorageService.getInStorageDataByPcbaNo(pcbaNo).Count>0 ? R.OK(wipStorageService.getInStorageDataByPcbaNo(pcbaNo)).message(message: "查询成功！") : R.Error("查无数据，请确认PCBA号");
 
         }
         #endregion
