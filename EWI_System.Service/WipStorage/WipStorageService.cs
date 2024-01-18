@@ -49,7 +49,7 @@ namespace EWI_System.Service
         }
         public List<TbMagazine> getMagazineByNo(string magazineNo)
         {
-            return aceDB.Queryable<TbMagazine>().Where(t=>t.MagazineNo==magazineNo).ToList();
+            return aceDB.Queryable<TbMagazine>().Where(t => t.MagazineNo == magazineNo).ToList();
         }
         #endregion
 
@@ -427,18 +427,33 @@ namespace EWI_System.Service
         {
             string sql = string.Format(@"select xx.magazineNo,xx.WipCarNo,xx.LocationNo,xx.AreaName,CONVERT(varchar(16), min(xx.uploaddate), 120) minDate from (
                                                     select a.WipCarNo,a.LocationNo ,y.AreaName ,c.MagazineNo ,d.pcbaPartNo,d.uploaddate from WipCarLocationInfo a 
-                                                    left join WipStorageLocation x on x.LocationNo = a.LocationNo 
-                                                    left join WipLocationArea y on x.WipLocationAreaId  = y.WipLocationAreaId 
-                                                    left join WipInfoRelation b on a.WipCarLocationInfoId  = b.WipCarLocationInfoId 
-                                                    left join WipMagazineCarInfo c on b.WipMagazineCarInfoId = c.WipMagazineCarInfoId 
-                                                    left join [10.124.12.33].[ACE_Traceability].[dbo].[Tb_WIP_InOut] d  on d.magazineNo  collate Chinese_PRC_CI_AS = c.MagazineNo collate Chinese_PRC_CI_AS 
+                                                    right join WipStorageLocation x on x.LocationNo = a.LocationNo 
+                                                    right join WipLocationArea y on x.WipLocationAreaId  = y.WipLocationAreaId 
+                                                    right join WipInfoRelation b on a.WipCarLocationInfoId  = b.WipCarLocationInfoId 
+                                                    right join WipMagazineCarInfo c on b.WipMagazineCarInfoId = c.WipMagazineCarInfoId 
+                                                    right join [10.124.12.33].[ACE_Traceability].[dbo].[Tb_WIP_InOut] d  on d.magazineNo  collate Chinese_PRC_CI_AS = c.MagazineNo collate Chinese_PRC_CI_AS 
                                                     where a.Deleted = 0 and d.pcbaPartNo = '{0}' 
                                                 ) xx group by xx.magazineNo,xx.WipCarNo,xx.LocationNo,xx.AreaName", pcbaNo);
             List<PcbaData> pcbaDatas = dbconn.Ado.SqlQuery<PcbaData>(sql);
             return pcbaDatas.OrderBy(i => i.minDate).ToList();
         }
 
-        
+        public bool getUnbindCarNoOfLocation(string carNo, ref string locationNo)
+        {
+            WipCarLocationInfo carLocationInfo = dbconn.Queryable<WipCarLocationInfo>().Where(w => w.WipCarNo == carNo)
+                                                                          .Where(w => w.Deleted == 0).First();
+            if (carLocationInfo == null)
+            {
+                return false;
+            }
+            else
+            {
+                locationNo = carLocationInfo.LocationNo;
+                return true;
+            }
+        }
+
+
         #endregion
     }
 }

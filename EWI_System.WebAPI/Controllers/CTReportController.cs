@@ -78,17 +78,18 @@ namespace EWI_System.WebAPI.Controllers
             return R.OK(CTReportlist).data("total", total);
         }
         /// <summary>
-        /// 
+        /// 删除数据及detail也需要删除
         /// </summary>
-        /// <param name="attendanceDate"></param>
-        /// <param name="userId"></param>
+        /// <param name="CTReportId"></param>
         /// <returns></returns>
         [HttpGet]
-        public R DeleteAttendance(string attendanceDate, string userId)
+        public R deleteCTReport(string CTReportId)
         {
-            
-            return R.Error("");
-            //return R.Error(msg);
+            if (string.IsNullOrEmpty(CTReportId))
+            {
+                return R.Error("检查请求数据");
+            }
+            return CTReportService.deleteCTReport(CTReportId)?R.OK(): R.Error("删除异常，请联系IT");
         }
         /// <summary>
         /// 

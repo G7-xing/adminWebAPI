@@ -12,8 +12,7 @@ namespace EWI_System.Service
         List<CtreportDetail> eyeDetailData(string CTReportId);
         List<CTReportRes> FetchList(int pageNum, int pageSize, ListQuery listQuery, ref int total);
         bool saveDetailData(CTDetaildataReq cTDetaildataReq);
-
-        //bool DeleteAttendance(string attendanceDate, string userId, out string msg);
+        bool deleteCTReport(string CTReportId);
         //List<Attendance> FetchAllList();
     }
 }

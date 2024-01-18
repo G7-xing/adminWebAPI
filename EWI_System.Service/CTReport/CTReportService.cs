@@ -160,24 +160,31 @@ namespace EWI_System.Service
                                                           .Where(r => r.CTRepeortId == report.CTRepeortId)
                                                           .ExecuteCommandHasChange();
         }
+        /// <summary>
+        /// 删除数据及detail
+        /// </summary>
+        /// <param name="CTReportId"></param>
+        /// <returns></returns>
+        public bool deleteCTReport(string CTReportId)
+        {
 
-
-        //    /// <summary>
-        //    /// 删除
-        //    /// </summary>
-        //    /// <param name="AttendanceId"></param>
-        //    /// <param name="msg"></param>
-        //    /// <returns></returns>
-
-        //    public bool DeleteAttendance(string attendanceDate, string userId, out string msg)
-        //    {
-        //        if (!dbconn.Deleteable<UserAttendanceInfo>().Where(it => it.AbsenceDate == attendanceDate).Where(it=>it.UserId==userId).ExecuteCommandHasChange())
-        //        {
-        //            msg = "执行语句有异常";
-        //            return false;
-        //        }
-        //        msg = "";
-        //        return true;
-        //    }
+            // 先找出details，有则删除，无则不删 , 再删head的数据
+            List<CtreportDetail> details = eyeDetailData(CTReportId);
+            if (details.Count>0)
+            {
+                // 事务来控制删两个表；
+                var result = dbconn.AsTenant().UseTran(() => 
+                {
+                    dbconn.Deleteable<CtreportDetail>().Where(c => c.CtreportId == CTReportId).ExecuteCommand();
+                    dbconn.Deleteable<CTReport>().Where(c => c.CTRepeortId == CTReportId).ExecuteCommand();
+                    return true;
+                });
+                return result.IsSuccess;
+            }
+            else
+            {
+                return dbconn.Deleteable<CTReport>().Where(c => c.CTRepeortId == CTReportId).ExecuteCommandHasChange();
+            }
+        }
     }
 }

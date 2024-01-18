@@ -161,6 +161,7 @@ namespace EWI_System.Service
             User user = userService.getUserById(mPSPDA.userid);
             Task<string> qadResult = callSoapService(mPSPDA.uniqueId, user.NickName);
             // 解析返回的xml
+            // TODO 线程问题待解决
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(qadResult.ToString());
             XmlNamespaceManager namespaceManager = new XmlNamespaceManager(xmlDoc.NameTable);
@@ -253,12 +254,19 @@ namespace EWI_System.Service
 
                 // 设置请求头
                 requestContent.Headers.Add("SOAPAction", "http://tempuri.org/CFMTranLoc");
+                string responseContent = "";
+                try
+                {
+                    // 发送POST请求并获取响应
+                    var response = await httpClient.PostAsync("http://10.124.12.47:806/ESUN_WEB.asmx?op=CFMTranLoc", requestContent);
+                    // 读取响应内容
+                    responseContent = await response.Content.ReadAsStringAsync();
+                }
+                catch (Exception es)
+                {
 
-                // 发送POST请求并获取响应
-                var response = await httpClient.PostAsync("http://10.124.12.47:806/ESUN_WEB.asmx?op=CFMTranLoc", requestContent);
-
-                // 读取响应内容
-                var responseContent = await response.Content.ReadAsStringAsync();
+                    throw new Exception(es.ToString());
+                }             
 
                 return responseContent;
             }

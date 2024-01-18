@@ -46,7 +46,8 @@ namespace EWI_System.Service
         bool checkUnbindLocationIsValidByNo(string locationNo, ref string msg);
         bool unbindLocationWithCarInfo(WipCarLocationInfo wipCarLocationInfo);
         List<PcbaData> getInStorageDataByPcbaNo(string pcbaNo);
-       
+        bool getUnbindCarNoOfLocation(string carNo, ref string locationNo);
+
         #endregion
     }
 }

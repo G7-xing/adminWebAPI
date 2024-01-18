@@ -454,6 +454,27 @@ namespace EWI_System.WebAPI.Controllers
 
         }
         /// <summary>
+        /// 解绑时对系小车的检验
+        /// </summary>
+        /// <param name="carNo"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public R getUnbindCarNoOfLocation(string carNo)
+        {
+
+            if (string.IsNullOrEmpty(carNo))
+            {
+                return R.Error("提交数据为空，请检查！");
+            }
+            if (!(wipStorageService.fetchWipCarByNo(carNo) == 1))
+            {
+                return R.Error("非法的小车信息，请扫入正确的小车二维码信息");
+            }
+            string locationNo = string.Empty;
+            return wipStorageService.getUnbindCarNoOfLocation(carNo, ref locationNo) ? R.OK(locationNo) : R.Error("该小车未入库，请注意");
+
+        }
+        /// <summary>
         /// 保存car location的关系
         /// </summary>
         /// <param name="wipCarLocationInfo"></param>
